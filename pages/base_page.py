@@ -31,6 +31,14 @@ class BasePage:
         element.clear()
         element.send_keys(value)
         return element
+    
+    # метод одного элемента
+    def find_element(self, *locator):
+        return self.driver.find_element(*locator)
+
+    #  метод для поиска элементов
+    def find_elements(self, *locator):
+        return self.driver.find_elements(*locator)
 
     # жду появление элементов    
     def wait_for_element_all_visible(self, locator, timeout=15):
