@@ -150,13 +150,11 @@ def test_click_self_logo_leads_to_main_page(prepared_success_modal):
 )
 def test_yandex_logo_opens_dzen(prepared_success_modal):
     flow = prepared_success_modal
-    page = flow["order"]
-    data = flow["data"]
+    page = flow["order"]  # или MainPage, зависит от твоей фикстуры
 
-    with allure.step("Кликаем логотип Яндекса и ждём открытия Дзена"):
-        page.click_yandex_logo_and_wait_for_dzen_url()
+    with allure.step("Клик по логотипу Яндекса → переход на Дзен"):
+        page.click_yandex_logo_and_wait_for_dzen()
 
-    current_url = page.driver.current_url
-    with allure.step(f"Проверил URL: {current_url}"):
-        assert "dzen.ru" in current_url, f"Ждал Дзен, но открыт: {current_url}"
+    with allure.step("Проверяем, что мы на Дзене"):
+        assert page.is_on_dzen(), "Ожидался Дзен, но открыт другой URL"
         time.sleep(1)
