@@ -1,0 +1,40 @@
+# --- Python ---
+__pycache__/
+# Игнорировать любые .pyc файлы
+*.pyc
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+.venv/
+*.egg-info/
+.eggs/
+pages/__init__.py
+tests/__init__.py
+pytest.ini
+requirements.txt
+
+# --- IDE (VS Code, PyCharm) ---
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# --- Allure (результаты и отчёт) ---
+allure-results/
+allure-report/
+help_allure.txt
+test_loc.py
+
+# --- pytest ---
+.pytest_cache/
+
+# --- macOS ---
+.DS_Store
+._*
+
+# --- Прочее ---
+.env
+secrets.json
