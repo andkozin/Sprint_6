@@ -30,7 +30,7 @@ class OrderFormPage(BasePage):
     def fill_metro(self, metro_name: str):
         self.fill_field(OrderFormLocators.INPUT_METRO_SEARCH, metro_name)
 
-        options = self.driver.find_elements(*OrderFormLocators.METRO_OPTION)
+        options = self.find_elements(*OrderFormLocators.METRO_OPTION)
         option = next((o for o in options if o.is_displayed()))
 
         if option:
@@ -64,7 +64,7 @@ class OrderFormPage(BasePage):
         self.wait_for_element_clickable(target_day).click()
 
     def is_date_filled(self):
-        input_el = self.driver.find_element(*OrderFormLocators.DATE_INPUT)
+        input_el = self.find_element(*OrderFormLocators.DATE_INPUT)
         value = input_el.get_attribute("value")
         return bool(value and value.strip())
 
@@ -78,7 +78,7 @@ class OrderFormPage(BasePage):
         #  меню
         self.wait.until(EC.presence_of_element_located(OrderFormLocators.DURATION_MENU))
 
-        options = self.driver.find_elements(*OrderFormLocators.DURATION_OPTION)
+        options = self.find_elements(*OrderFormLocators.DURATION_OPTION)
 
         selected_option = None
         available_texts = []
@@ -95,7 +95,7 @@ class OrderFormPage(BasePage):
        
     def is_duration_selected(self, expected_text: str):
         
-        trigger = self.driver.find_element(*OrderFormLocators.DURATION_DROPDOWN)
+        trigger = self.find_element(*OrderFormLocators.DURATION_DROPDOWN)
         actual_text = trigger.text.strip() or trigger.get_attribute("aria-label") or ""
         if expected_text.lower() in actual_text.lower():
                 return True
