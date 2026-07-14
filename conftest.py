@@ -6,13 +6,32 @@ from selenium.webdriver.firefox.options import Options
 from pages.main_page import MainPage
 from pages.order_page import OrderFormPage
 
-@pytest.fixture(scope="function") #@pytest.fixture(scope="module")
+from selenium.webdriver.firefox.service import Service
+from webdriver_manager.firefox import GeckoDriverManager
+import os
+import subprocess
+
+
+@pytest.fixture(scope="function")
 def driver():
     options = Options()
     options.add_argument("--window-size=1920,1080")
-    driver = webdriver.Firefox(options=options)
+
+    service = Service(GeckoDriverManager().install())
+    driver = webdriver.Firefox(service=service, options=options)
     yield driver
-    driver.quit()
+    """ После обновления браузера появилась проблема - (60.06s teardown tests/test_order.py
+    57.46s teardown tests/test_order.py) ИИ предлож. убрать driver.quit() и использовать killall в
+    @pytest.fixture(scope="function") 
+    def driver():
+        options = Options()
+        options.add_argument("--window-size=1920,1080")
+        driver = webdriver.Firefox(options=options)
+        yield driver
+        driver.quit()"""
+    if os.name == "posix":
+        subprocess.run(["killall", "-9", "firefox"], capture_output=True, check=False)
+        subprocess.run(["killall", "-9", "geckodriver"], capture_output=True, check=False)
 
 @pytest.fixture(scope="function")
 def page(driver):
