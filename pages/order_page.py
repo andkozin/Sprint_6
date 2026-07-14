@@ -70,7 +70,7 @@ class OrderFormPage(BasePage):
 
     def select_duration(self, expected_text: str):
         
-        trigger = self.wait.until(EC.element_to_be_clickable(OrderFormLocators.DURATION_TRIGGER))
+        trigger = self.wait_for_element_clickable(OrderFormLocators.DURATION_TRIGGER)
 
         self.scroll_into_view(trigger)
         trigger.click()
@@ -106,7 +106,7 @@ class OrderFormPage(BasePage):
         else:
             locator = OrderFormLocators.CHECKBOX_GREY
         
-        checkbox = self.wait.until(EC.element_to_be_clickable(locator))
+        checkbox = self.wait_for_element_clickable(locator)
         self.scroll_into_view(checkbox)
         self.click_with_fallback(checkbox)
 
@@ -151,13 +151,21 @@ class OrderFormPage(BasePage):
         btn = self.wait_for_element_clickable(OrderFormLocators.LOGO_LINK_SAMOKAT)
         btn.click()
 
-    def click_yandex_logo_and_wait_for_dzen_url(self, timeout=10):
+
+    # яндекс через BasePage
+    def click_yandex_logo_and_wait_for_dzen(self, timeout=10):
         btn = self.wait_for_element_clickable(OrderFormLocators.LOGO_YANDEX_LINK)
         btn.click()
 
-        original_window = self.driver.window_handles[0]
-        new_window = next(h for h in self.driver.window_handles if h != original_window)
-        self.driver.switch_to.window(new_window)
+        original_handle = self.get_current_handle()
 
-        #  dzen.ru в URL
-        WebDriverWait(self.driver, timeout).until(EC.url_contains("dzen.ru"))
+        #  на новую вкладку (через BasePage)
+        self.switch_to_new_window(original_handle)
+
+        # жду URL через BasePage
+        self.wait_for_url_contains("dzen.ru", timeout)
+
+    def is_on_dzen(self) -> bool:
+        return self.is_url_contains("dzen.ru")
+
+   
