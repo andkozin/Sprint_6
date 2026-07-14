@@ -83,3 +83,30 @@ class BasePage:
             expected = str(expected_value).replace("\u00A0", " ").strip()
             
             return actual == expected
+    
+    # для навигации
+    # текущее окно
+    def get_current_handle(self) -> str:
+        return self.driver.current_window_handle
+
+    def get_all_handles(self) -> list[str]:
+        return self.driver.window_handles
+
+    #№ новая вкладка
+    def switch_to_new_window(self, original_handle: str | None = None):
+        if original_handle is None:
+            original_handle = self.get_current_handle()
+
+        all_handles = self.get_all_handles()
+        try:
+            new_handle = next(h for h in all_handles if h != original_handle)
+            self.driver.switch_to.window(new_handle)
+        except StopIteration:
+            raise RuntimeError("Не найдено новое окно для переключения")
+
+    #  URL 
+    def wait_for_url_contains(self, substring: str, timeout=10):
+        WebDriverWait(self.driver, timeout).until(EC.url_contains(substring))
+
+    def is_url_contains(self, substring: str) -> bool:
+        return substring in self.driver.current_url
