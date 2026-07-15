@@ -1,8 +1,5 @@
 # pages/order_page.py
 
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.wait import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 from .base_page import BasePage
 from .locators import OrderFormLocators 
 
@@ -76,7 +73,7 @@ class OrderFormPage(BasePage):
         trigger.click()
 
         #  меню
-        self.wait.until(EC.presence_of_element_located(OrderFormLocators.DURATION_MENU))
+        self.wait_for_element_clickable(OrderFormLocators.DURATION_MENU)
 
         options = self.find_elements(*OrderFormLocators.DURATION_OPTION)
 
@@ -147,10 +144,10 @@ class OrderFormPage(BasePage):
         btn = self.wait_for_element_clickable(OrderFormLocators.VIEW_STATUS_BUTTON)
         btn.click()
 
+    # переход на ГС
     def click_logo(self):
         btn = self.wait_for_element_clickable(OrderFormLocators.LOGO_LINK_SAMOKAT)
         btn.click()
-
 
     # яндекс через BasePage
     def click_yandex_logo_and_wait_for_dzen(self, timeout=10):

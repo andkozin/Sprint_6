@@ -1,6 +1,5 @@
 # tests/data.py
 
-
 ORDER_DATA_SET_1 = {
     "name": "Петр",
     "surname": "Петров",

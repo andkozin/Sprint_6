@@ -20,7 +20,7 @@ class BasePage:
         self.driver.get(target)
 
     # убрал cookie
-    def close_cookie_banner(self, timeout: int | None = None):
+    def close_cookie_banner(self):
         locator = OrderFormLocators.CONFIRM_BUTTON 
         btn = self.wait_for_element_clickable(locator)
         btn.click()
@@ -46,9 +46,8 @@ class BasePage:
         return self.wait.until(EC.presence_of_all_elements_located(locator))
 
     # жду на клик
-    def wait_for_element_clickable(self, locator, timeout=15):
-        return self.wait.until(EC.element_to_be_clickable(locator),
-            message=f"Элемент {locator} не стал клик.  за {timeout} сек.")
+    def wait_for_element_clickable(self, locator):
+        return self.wait.until(EC.element_to_be_clickable(locator)) 
         
     #  для клика js
     def click_with_fallback(self, locator):
@@ -86,10 +85,10 @@ class BasePage:
     
     # для навигации
     # текущее окно
-    def get_current_handle(self) -> str:
+    def get_current_handle(self):
         return self.driver.current_window_handle
 
-    def get_all_handles(self) -> list[str]:
+    def get_all_handles(self):
         return self.driver.window_handles
 
     #№ новая вкладка
@@ -98,15 +97,13 @@ class BasePage:
             original_handle = self.get_current_handle()
 
         all_handles = self.get_all_handles()
-        try:
-            new_handle = next(h for h in all_handles if h != original_handle)
-            self.driver.switch_to.window(new_handle)
-        except StopIteration:
-            raise RuntimeError("Не найдено новое окно для переключения")
+       
+        new_handle = next(h for h in all_handles if h != original_handle)
+        self.driver.switch_to.window(new_handle)
 
     #  URL 
     def wait_for_url_contains(self, substring: str, timeout=10):
         WebDriverWait(self.driver, timeout).until(EC.url_contains(substring))
 
-    def is_url_contains(self, substring: str) -> bool:
+    def is_url_contains(self, substring: str):
         return substring in self.driver.current_url

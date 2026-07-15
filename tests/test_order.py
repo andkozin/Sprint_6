@@ -5,12 +5,11 @@ import pytest
 import allure
 from typing import Any
 from pages.locators import OrderFormLocators
-from pages.order_page import OrderFormPage
 from .data import ORDER_DATA_SET_1, ORDER_DATA_SET_2
-"""Переписал - разбил на 2 заполняемые формы (может лишнее) и вынес навигацию 2шт(может лишнее но вроде прозрачно)
-использовал is_field_has_value в базе для использования проверки заполнения поля но не с кален. списки
-"""
 
+"""Переписал - разбил на 2 заполняемые формы (может лишнее) и вынес навигацию 2шт(для прозрачно)
+использовал is_field_has_value в Base для проверки значений поля но не с кален., списки
+"""
 
 @allure.feature("Оформление заказа")
 @allure.story("Заполнение 1формы и переход ко второй")
@@ -112,7 +111,7 @@ def test_form_2_fills_and_confirms_order(prepared_form_2):
     with allure.step("жду появления окна с кнопкой «Да»"):
         page_order.wait_for_modal_with_confirm_button()
 
-    # --- Действие: Подтверждение заказа ---
+    # Подтверждение заказа 
     with allure.step("Подтверждаю заказ кнопкио «Да»"):
         page_order.confirm_order_yes()
 
@@ -130,17 +129,13 @@ def test_form_2_fills_and_confirms_order(prepared_form_2):
 def test_click_self_logo_leads_to_main_page(prepared_success_modal):
     flow = prepared_success_modal
     page = flow["order"]
-    data = flow["data"]
-    driver = page.driver
+    
 
     with allure.step("Клик на логотип «Самокат» в шапке"):
         page.click_logo()
 
-    # проверяемна главной
-    current_url = driver.current_url
-    with allure.step(f"Проверил переход на ГС: {current_url}"):
-        assert "scooter" in current_url.lower(), \
-            f"Ждал URL с 'scooter', но текущий: {current_url}"
+    with allure.step("Преход на ГС (URL содержит 'scooter')"):
+        assert page.is_url_contains("scooter"), "Ждал URL  'scooter'"
     time.sleep(1)
 
 @pytest.mark.parametrize(
@@ -150,11 +145,11 @@ def test_click_self_logo_leads_to_main_page(prepared_success_modal):
 )
 def test_yandex_logo_opens_dzen(prepared_success_modal):
     flow = prepared_success_modal
-    page = flow["order"]  # или MainPage, зависит от твоей фикстуры
+    page = flow["order"]  
 
     with allure.step("Клик по логотипу Яндекса → переход на Дзен"):
         page.click_yandex_logo_and_wait_for_dzen()
 
     with allure.step("Проверяем, что мы на Дзене"):
-        assert page.is_on_dzen(), "Ожидался Дзен, но открыт другой URL"
+        assert page.is_on_dzen(), "Ждал Дзен,  открыт  URL"
         time.sleep(1)
