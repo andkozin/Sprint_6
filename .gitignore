@@ -22,6 +22,12 @@ requirements.txt
 *.swp
 *.swo
 
+# Coverage
+.coverage
+htmlcov/
+coverage.xml
+
+
 # --- Allure (результаты и отчёт) ---
 allure-results/
 allure-report/
