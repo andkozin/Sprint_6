@@ -1,23 +1,21 @@
 # tests/test_order.py
-import time
 
-import pytest
 import allure
 from typing import Any
 from pages.locators import OrderFormLocators
-from .data import ORDER_DATA_SET_1, ORDER_DATA_SET_2
 
-"""Переписал - разбил на 2 заполняемые формы (может лишнее) и вынес навигацию 2шт(для прозрачно)
+"""Разбил на 2 заполняемые формы (может лишнее) 
+1я кнопка- 1я форма- 1е данные > 2я кнопка-1я форма- 2е данные > проверка появления 2й формы
+{обьединяя формы  смотрелось как потеря что и где} но тут же на каждое поле есть assert (лишний!?) оставлял один финальный появл. формы 2
+но при выполнение работы помогали ососбенно календарь списки
+для заполнение 1формы перд тестом 2формы использовал фикстуру заполнения 1формы
+и вынес навигацию 2шт(прозрачно!?) 2 кнопки через фикстру заполнения 2формы
 использовал is_field_has_value в Base для проверки значений поля но не с кален., списки
 """
 
 @allure.feature("Оформление заказа")
 @allure.story("Заполнение 1формы и переход ко второй")
-@pytest.mark.parametrize(
-    "location, data_set",
-    [("top", ORDER_DATA_SET_1), ("bottom", ORDER_DATA_SET_2)],
-    ids=["top_button", "bottom_button"],
-)
+
 def test_form_1_fills_and_transitions_to_form_2(prepared_order_flow):
     flow = prepared_order_flow
     page_order: Any = flow["order"]
@@ -68,11 +66,7 @@ def test_form_1_fills_and_transitions_to_form_2(prepared_order_flow):
 
 @allure.feature("Оформление заказа")
 @allure.story("Заполнение второй формы и подтверждение заказа")
-@pytest.mark.parametrize(
-    "location, data_set",
-    [("top", ORDER_DATA_SET_1), ("bottom", ORDER_DATA_SET_2)],
-    ids=["top_button", "bottom_button"],
-)
+
 def test_form_2_fills_and_confirms_order(prepared_form_2):
     flow = prepared_form_2
     page_order: Any = flow["order"]
@@ -121,28 +115,22 @@ def test_form_2_fills_and_confirms_order(prepared_form_2):
 
 @allure.feature("Навигация")
 @allure.story("Переход на ГС по лого «Самокат» после заказа")
-@pytest.mark.parametrize(
-    "location, data_set",
-    [("top", ORDER_DATA_SET_1), ("bottom", ORDER_DATA_SET_2)],
-    ids=["top_button", "bottom_button"],
-)
+
 def test_click_self_logo_leads_to_main_page(prepared_success_modal):
     flow = prepared_success_modal
     page = flow["order"]
     
-
     with allure.step("Клик на логотип «Самокат» в шапке"):
         page.click_logo()
 
     with allure.step("Преход на ГС (URL содержит 'scooter')"):
         assert page.is_url_contains("scooter"), "Ждал URL  'scooter'"
-    time.sleep(1)
+    
 
-@pytest.mark.parametrize(
-    "location, data_set",
-    [("top", ORDER_DATA_SET_1), ("bottom", ORDER_DATA_SET_2)],
-    ids=["top_button", "bottom_button"],
-)
+
+@allure.feature("Навигация")
+@allure.story("Переход на по лого «Яндекс» после ГС")
+
 def test_yandex_logo_opens_dzen(prepared_success_modal):
     flow = prepared_success_modal
     page = flow["order"]  
@@ -152,4 +140,4 @@ def test_yandex_logo_opens_dzen(prepared_success_modal):
 
     with allure.step("Проверяем, что мы на Дзене"):
         assert page.is_on_dzen(), "Ждал Дзен,  открыт  URL"
-        time.sleep(1)
+        

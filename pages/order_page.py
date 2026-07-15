@@ -107,7 +107,7 @@ class OrderFormPage(BasePage):
         self.scroll_into_view(checkbox)
         self.click_with_fallback(checkbox)
 
-    # для проверки заполнения поля цвет  можно и в тесте проверить на  is_selected() 
+    # для проверки заполнения поля цвет  
     def is_scooter_color_selected(self, color: str) -> bool:
        
         if color == "black":
@@ -162,7 +162,7 @@ class OrderFormPage(BasePage):
         # жду URL через BasePage
         self.wait_for_url_contains("dzen.ru", timeout)
 
-    def is_on_dzen(self) -> bool:
+    def is_on_dzen(self):
         return self.is_url_contains("dzen.ru")
 
    

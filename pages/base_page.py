@@ -83,6 +83,7 @@ class BasePage:
             
             return actual == expected
     
+    
     # для навигации
     # текущее окно
     def get_current_handle(self):

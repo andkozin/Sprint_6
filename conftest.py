@@ -10,7 +10,9 @@ from selenium.webdriver.firefox.service import Service
 from webdriver_manager.firefox import GeckoDriverManager
 import os
 import subprocess
+from tests.data import ENTRY_POINTS
 
+BASE_URL = "https://qa-scooter.praktikum-services.ru"
 
 @pytest.fixture(scope="function")
 def driver():
@@ -20,6 +22,7 @@ def driver():
     service = Service(GeckoDriverManager().install())
     driver = webdriver.Firefox(service=service, options=options)
     yield driver
+    
     """ После обновления браузера появилась проблема - (60.06s teardown tests/test_order.py
     57.46s teardown tests/test_order.py) ИИ предлож. убрать driver.quit() и использовать killall в
     @pytest.fixture(scope="function") 
@@ -33,38 +36,43 @@ def driver():
         subprocess.run(["killall", "-9", "firefox"], capture_output=True, check=False)
         subprocess.run(["killall", "-9", "geckodriver"], capture_output=True, check=False)
 
-@pytest.fixture(scope="function")
-def page(driver):
-    base_url = "https://qa-scooter.praktikum-services.ru"
-    return MainPage(driver, base_url=base_url)
-
-    # подговил открыл страницу -банер закрыл- кликал на точку входа в
+# для главной страницы
 @pytest.fixture
-def prepared_order_flow(driver, page, location, data_set):
-    
-    page.open()
-    main_page = MainPage(driver)
-    page_order = OrderFormPage(driver)
+def page(driver):
+    return MainPage(driver, base_url=BASE_URL)
 
-    #  закрываем куки
-    with allure.step("Закрываю баннер с куки"):
+# открыл страницу,закрыл куки, клик заказать, жду форму1
+@pytest.fixture(params=["top", "bottom"], ids=["top_button", "bottom_button"])
+def prepared_order_flow(driver, request):
+    
+    entry_key = request.param
+    config = ENTRY_POINTS[entry_key]
+    location = config["location"]
+    data_set = config["data"]
+
+    #  URL
+    main_page = MainPage(driver, base_url=BASE_URL)
+    page_order = OrderFormPage(driver, base_url=BASE_URL)
+
+    with allure.step("Открываем главную страницу"):
+        main_page.open()
+
+    with allure.step("Закрыл куки "):
+        # Метод должен быть с try/except внутри класса страницы!
         page_order.close_cookie_banner()
 
-    #  кликаем (top или bottom)
-    with allure.step(f"Кликаю кнопку заказа: {location}"):
+    with allure.step(f"Клик кнопка заказа: {location}"):
         main_page.click_order_button(location=location)
 
-    # ждём, пока форма будет готова
-    with allure.step("Ожидаю готовности формы 1"):
+    with allure.step("Жду Форму1"):
         page_order.wait_for_form_1_ready()
 
-    # вернул все тесту
     return {
         "main": main_page,
         "order": page_order,
         "data": data_set,
-        "page": page
     }
+
 # для заполнения формы 2
 @pytest.fixture
 def prepared_form_2(prepared_order_flow):
