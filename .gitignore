@@ -30,7 +30,7 @@ coverage.xml
 
 # --- Allure (результаты и отчёт) ---
 allure-results/
-# allure-report/
+allure-report/
 help_allure.txt
 test_loc.py
 
