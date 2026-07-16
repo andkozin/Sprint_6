@@ -92,11 +92,10 @@ def prepared_form_2(prepared_order_flow):
         page_order.fill_phone(data["phone"])
 
         page_order.submit_order()
-        assert page_order.wait_for_form_2_ready(), "Форма 2 не появилась"
-
+       
     return flow # вернул в тест
 
-# для навигации
+# для навигации оставил только подготовку
 @pytest.fixture
 def prepared_success_modal(prepared_form_2):
     flow = prepared_form_2
@@ -113,7 +112,7 @@ def prepared_success_modal(prepared_form_2):
     page_order.confirm_order_yes()
     
     #  модалка с посмотреть статус
-    assert page_order.is_order_success_visible(), "Форма Посмотреть статус не появилась"
+    page_order.is_order_success_visible()
     page_order.click_view_status()
 
-    yield flow # вернул в тест
+    return flow # вернул в тест

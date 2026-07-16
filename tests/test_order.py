@@ -1,5 +1,5 @@
 # tests/test_order.py
-
+import time
 import allure
 from typing import Any
 from pages.locators import OrderFormLocators
@@ -123,7 +123,7 @@ def test_click_self_logo_leads_to_main_page(prepared_success_modal):
     
     with allure.step("Клик на логотип «Самокат» в шапке"):
         page.click_logo()
-
+        time.sleep(2)
     with allure.step("Преход на ГС (URL содержит 'scooter')"):
         assert page.is_url_contains("scooter"), "Ждал URL  'scooter'"
     
@@ -138,7 +138,7 @@ def test_yandex_logo_opens_dzen(prepared_success_modal):
 
     with allure.step("Клик по логотипу Яндекса → переход на Дзен"):
         page.click_yandex_logo_and_wait_for_dzen()
-
+        time.sleep(2)
     with allure.step("Проверяем, что мы на Дзене"):
         assert page.is_on_dzen(), "Ждал Дзен,  открыт  URL"
         
