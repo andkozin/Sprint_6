@@ -2,7 +2,7 @@
 import pytest
 import allure
 from pages.main_page import MainPage
-from pages.data_main import EXPAND_TEXT
+from data_main import EXPAND_TEXT
 
 @allure.feature("FAQ: Аккордеон с вопросами")
 @allure.story("Проверка раскрытия текстов вопросов аккордеона")
