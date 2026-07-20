@@ -45,8 +45,16 @@ class OrderFormLocators:
     COMMENT_FIELD = (By.CSS_SELECTOR, 'input[placeholder="Комментарий для курьера"]') # поле комментарий
 
     ORDER_BUTTON_IN_FORM_2 = (By.XPATH, '//div[contains(@class, "Order_Buttons")]//button[normalize-space()="Заказать"]') # кнопка заказать 2 формы ввода
-    CONFIRM_BUTTON_YES = (By.XPATH, '//div[contains(@class, "Order_Modal")]//button[normalize-space()="Да"]') # кнопка ДА подтверждения заказа
+    
+    CONFIRM_BUTTON_YES_MODAL = (By.XPATH, "//*[contains(text(), 'Хотите оформить заказ?')]")
+    
+    
+    CONFIRM_BUTTON_YES=(By.XPATH, "//button[normalize-space()='Да']")
+    
+
     SUCCESS_MODAL_HEADER = (By.XPATH, '//div[contains(@class, "Order_Modal")]//div[contains(@class, "Order_ModalHeader")]') # окно создания заказа
+    
+
     VIEW_STATUS_BUTTON = (By.XPATH, '//div[contains(@class, "Order_NextButton")]//button[normalize-space()="Посмотреть статус"]') # кнопка для статуса заказа
 
     LOGO_LINK_SAMOKAT = (By.CSS_SELECTOR, 'a[class*="Header_LogoScooter"]') # лого Самоката на ГС
