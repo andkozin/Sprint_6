@@ -2,6 +2,7 @@
 
 from .base_page import BasePage
 from .locators import OrderFormLocators 
+from selenium.webdriver.common.by import By
 
 class OrderFormPage(BasePage):
 
@@ -42,6 +43,17 @@ class OrderFormPage(BasePage):
         btn = self.wait_for_element_clickable(OrderFormLocators.BUTTON_NEXT)
         self.click_with_fallback(btn)
 
+#заполняет всю Форму 1
+    def fill_form_1_full(self, data):
+        self.fill_name(data["name"])
+        self.fill_surname(data["surname"])
+        self.fill_address(data["address"])
+        self.fill_metro(data["metro"])
+        self.fill_phone(data["phone"])
+
+
+
+
     def wait_for_form_2_ready(self):
         self.wait_for_element_clickable(OrderFormLocators.DATE_INPUT)
         self.wait_for_element_clickable(OrderFormLocators.DURATION_DROPDOWN)
@@ -62,7 +74,7 @@ class OrderFormPage(BasePage):
 
     def is_date_filled(self):
         input_el = self.find_element(*OrderFormLocators.DATE_INPUT)
-        value = input_el.get_attribute("value")
+        value = input_el.get_attribute("value") or ""
         return bool(value and value.strip())
 
     def select_duration(self, expected_text: str):
@@ -127,13 +139,26 @@ class OrderFormPage(BasePage):
         button = self.wait_for_element_clickable(OrderFormLocators.ORDER_BUTTON_IN_FORM_2)
         button.click()
 
-    def wait_for_modal_with_confirm_button(self):
-        self.wait_for_element_clickable(OrderFormLocators.CONFIRM_BUTTON_YES)
+#заполняет всю Форму 2
+    def fill_form_2_full(self, data):
+        self.fill_order_date_from_calendar(data["order_date"])
+        self.select_duration(data["duration"])
+        self.select_scooter_color(data["scooter_color"])
+        self.fill_comment(data["comments"])
 
+    
+    def wait_for_modal_with_confirm_button(self):
+        
+        element = self.wait_for_element_clickable(OrderFormLocators.CONFIRM_BUTTON_YES_MODAL)
+        return element 
+        
+    
     # подтверждение заказа  после второй формы 
     def confirm_order_yes(self):
-        button = self.wait_for_element_clickable(OrderFormLocators.CONFIRM_BUTTON_YES)
-        button.click()
+        
+        button = self.click_with_fallback(OrderFormLocators.CONFIRM_BUTTON_YES)
+        return button
+
 
     # смотрю заголово окно
     def is_order_success_visible(self):
