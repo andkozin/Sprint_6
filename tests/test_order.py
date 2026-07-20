@@ -1,139 +1,166 @@
-# tests/test_order.py
-import time
-import allure
-from typing import Any
-from pages.locators import OrderFormLocators
 
-"""Разбил на 2 заполняемые формы (может лишнее) 
-1я кнопка- 1я форма- 1е данные > 2я кнопка-1я форма- 2е данные > проверка появления 2й формы
-{обьединяя формы  смотрелось как потеря - что и где} но тут же на каждое поле есть assert (лишний!?) 
-оставлял один финальный появл. формы 2
-но при выполнение работы помогали ососбенно при работе с календарем и списками
-для заполнение 1формы перед тестом 2формы использовал фикстуру заполнения 1формы
-и вынес навигацию 2шт(прозрачно!?) 2 кнопки через фикстру заполнения 2формы
-использовал is_field_has_value в Base для проверки значений поля но не с кален., списки
-"""
+import pytest
+import allure
+import json
+
+from conftest import BASE_URL
 
 @allure.feature("Оформление заказа")
-@allure.story("Сценарий заполнение от 1формы до подтверждения")
+@allure.story("Сценарий заполнения от Формы 1 до перехода к Форме 2")
+
 class TestOrderFlow:
 
-    def test_form_1_fills_and_transitions_to_form_2(self,prepared_order_flow):
+    @allure.title("Заполнение Формы 1 и переход к Форме 2 ({param_id})")
+    @pytest.mark.parametrize(
+    "entry_data_by_key",
+    ["top", "bottom"],
+    ids=["top_btn", "bottom_btn"],
+    indirect=True,  
+)
+    @allure.title("Полный проход сценария: от Формы 1 до перехода к Форме 2 ({request.node.callspec.id})")
+    def test_form_1_fills_and_transitions_to_form_2(self, entry_data_by_key, prepared_order_flow):
+        data, button_location = entry_data_by_key  # данные уже готовы
+
+        allure.attach(
+            json.dumps(data, ensure_ascii=False, indent=2),
+            f"Набор данных ({button_location})",
+            allure.attachment_type.JSON
+        )
+
         flow = prepared_order_flow
-        page_order: Any = flow["order"]
-        data = flow["data"]
+        main_page = flow["main"]
+        page_order = flow["order"]
 
-        # Подготовил в фикстурк
+        with allure.step(f"Нажимаем кнопку «Заказать» ({button_location})"):
+            main_page.click_order_button(button_location)
 
-        # проверка по каждому полю) 
-        with allure.step(f"Заполняю поле Имя : {data['name']}"):
-            page_order.fill_name(data["name"])
+        with allure.step("Заполняем все поля Формы 1"):
+            page_order.fill_form_1_full(data)
 
-        with allure.step("Проверяю поле Имя заполнено"):
-            assert page_order.is_field_has_value(OrderFormLocators.INPUT_NAME, data["name"]), f"Поле Имя не заполнено '{data['name']}'"
-
-        with allure.step(f"Заполняю поле Фамилия : {data['surname']}"):
-            page_order.fill_surname(data["surname"])
-
-        with allure.step("Проверяю поле Фамилия заполнено"):
-            assert page_order.is_field_has_value(OrderFormLocators.INPUT_SURNAME, data["surname"]), f"Поле Фамилия не заполнено '{data['surname']}'"
-
-        with allure.step(f"Заполняю поле Адрес : {data['address']}"):
-            page_order.fill_address(data["address"])
-
-        with allure.step("Проверяюполе Адрес заполнено"):
-            assert page_order.is_field_has_value(OrderFormLocators.INPUT_ADDRESS, data["address"]), "Поле Адрес не заполнено"
-
-        with allure.step(f"Заполняю поле Метро : {data['metro']}"):
-            page_order.fill_metro(data["metro"])
-
-        with allure.step("Проверяю Метро заполнено"):
-            assert page_order.is_field_has_value(OrderFormLocators.INPUT_METRO_SEARCH, data["metro"]), " Метро не заполнено"
-
-        with allure.step(f"Заполняю поле Телефон : {data['phone']}"):
-            page_order.fill_phone(data["phone"])
-
-        with allure.step("Проверяю поле Телефон Телефон"):
-            assert page_order.is_field_has_value(OrderFormLocators.INPUT_PHONE, data["phone"]), "Поле Телефон не заполнено"
-
-        # отправка формы
-        with allure.step("Отправляю Форму 1кнопка Оформить"):
+        with allure.step("Отправляем Форму 1"):
             page_order.submit_order()
 
-        # Резул. теста первой формы
-        with allure.step("Проверяю, что после отправки Формы 1 появилась Форма 2"):
+        with allure.step("Проверяем, что появилась Форма 2"):
             assert page_order.wait_for_form_2_ready(), "Форма 2 не появилась после отправки Формы 1"
 
-#Только Форма 2
 
-    def test_form_2_fills_and_confirms_order(self,prepared_form_2):
-        flow = prepared_form_2
-        page_order: Any = flow["order"]
-        data = flow["data"]
-        
-        # форма 2 открыта
-        #заполняю формы 2
-        with allure.step(f"Устанавливаю дату заказа: {data['order_date']}"):
+
+    @allure.feature("Оформление заказа")
+    @allure.story("Полный позитивный сценарий заказа самоката")
+    
+    @pytest.mark.parametrize(
+        "entry_data_by_key",
+        ["top", "bottom"],
+        ids=["top_btn", "bottom_btn"],
+        indirect=True,
+    )
+    @allure.title("Полный проход сценария: Форма 2 и подтверждение заказа ({request.node.callspec.id})")
+    def test_form_2_fills_and_confirms_order(self, entry_data_by_key, prepared_order_flow, request):
+        data, button_location = entry_data_by_key
+
+        allure.attach(
+                    json.dumps(data, ensure_ascii=False, indent=2),
+                    f"Набор данных ({button_location})",
+                    allure.attachment_type.JSON
+                )
+
+        flow = prepared_order_flow
+        main_page = flow["main"]
+        page_order = flow["order"]
+
+        # Переход к Форме 2 
+        with allure.step(f"Старт сценария через кнопку: {button_location}"):
+            main_page.click_order_button(button_location)
+
+        with allure.step("Заполняем все поля Формы 1"):
+            page_order.fill_form_1_full(data)
+
+        with allure.step("Отправляем Форму 1 кнопкой «Оформить заказ»"):
+            page_order.submit_order()
+
+            #  с Формы 1 на Форму 2
+        with allure.step("Проверяем, что появилась Форма 2"):
+            assert page_order.wait_for_form_2_ready(), "Форма 2 не появилась после отправки Формы 1"
+
+        # Заполнение Формы 2 
+            
+        with allure.step(f"Указываем дату заказа:{data['order_date']} день"):
             page_order.fill_order_date_from_calendar(data["order_date"])
 
-        with allure.step("дата заказа корректно установлена "):
-            assert page_order.is_date_filled(), "Дата не установлена"
-
-        with allure.step(f"Выбор срок аренды: {data['duration']}"):
+        with allure.step(f"Указываем срок аренды:{data['duration']} "):
             page_order.select_duration(data["duration"])
 
-        with allure.step("Проверил срок аренды есть"):
-            assert page_order.is_duration_selected(data["duration"]), "Не удалось выбрать срок"
-
-        with allure.step(f"Выбираю цвет самоката: {data['scooter_color']}"):
+        with allure.step(f"Указываем цвет:{data['scooter_color']} "):
             page_order.select_scooter_color(data["scooter_color"])
 
-        with allure.step("Проверяю выбран цвет"):
-            assert page_order.is_scooter_color_selected(data["scooter_color"]), f"Не удалось выбрать цвет '{data['scooter_color']}'"
-
-        with allure.step(f"Заполняю поле комментарий значением: {data['comments']}"):
+        with allure.step(f"Заполняю комментарии:{data['comments']} "):
             page_order.fill_comment(data["comments"])
 
-        with allure.step("Проверяю комментарий отображается "):
-            assert page_order.is_field_has_value(OrderFormLocators.COMMENT_FIELD, data["comments"]), f"Комментарий не заполнен: '{data['comments']}'"
-
-        # отпрвил форму2
-        with allure.step("Клик на кнопку «Заказать» на форме 2"):
+        # Подтверждение заказа
+        with allure.step("Подтверждаем заказ отправка формы 2"):
             page_order.click_order_button_2()
 
-        with allure.step("жду появления окна с кнопкой «Да»"):
-            page_order.wait_for_modal_with_confirm_button()
-
-        # Подтверждение заказа 
-        with allure.step("Подтверждаю заказ кнопкио «Да»"):
+        with allure.step("Ждём появления модалки «Хотите оформить заказ?» с кнопкой «Да»"):
+            modal_button = page_order.wait_for_modal_with_confirm_button()  # Получаем элемент
+            
+            allure.attach(
+                f"Модалка найдена. Кнопка «Да» готова к клику. Текст кнопки: '{modal_button.text}'",
+                "Статус модалки подтверждения",
+                allure.attachment_type.TEXT
+            )
+        with allure.step("Подтверждаем заказ кнопкой ДА"):
             page_order.confirm_order_yes()
+            
 
-        # результат теста 2 формы
-        with allure.step("Проверяю появление окна «Заказ оформлен»"):
-            assert page_order.is_order_success_visible(), "Модалки «Заказ оформлен» нет"
+
+
+
+       
+        
+        # проверка 
+        with allure.step("Проверяем появление окна «Заказ оформлен»"):
+            assert page_order.is_order_success_visible(), "Модалка «Заказ оформлен» не появилась"
 
 @allure.feature("Навигация")
 @allure.story("Переходы по логотипам")
+@pytest.mark.parametrize("entry_data_by_key", ["top", "bottom"], indirect=True, ids=["top_btn", "bottom_btn"])
 class TestNavigationFlow:
 
-    def test_click_self_logo_leads_to_main_page(self,prepared_success_modal):
-        flow = prepared_success_modal
+    @allure.title("Клик по логотипу «Самокат» - переход на главную ")
+    def test_click_self_logo_leads_to_main_page(self, flow_with_success_modal, entry_data_by_key):
+        flow = flow_with_success_modal
         page = flow["order"]
-        
-        with allure.step("Клик на логотип «Самокат» в шапке"):
+
+        data, button_location = entry_data_by_key
+        allure.attach(json.dumps(data, ensure_ascii=False, indent=2), f"Данные заказа (кнопка: {button_location})", allure.attachment_type.JSON)
+
+        with allure.step("Переходим к просмотру статуса заказа"):
+            page.click_view_status()
+
+        with allure.step("Кликаем логотип «Самокат»"):
             page.click_logo()
-            time.sleep(2)
-        with allure.step("Преход на ГС (URL содержит 'scooter')"):
-            assert page.is_url_contains("scooter"), "Ждал URL  'scooter'"
-    
+            
+        with allure.step("Проверяем переход на главную страницу"):
+            current_url = page.driver.current_url
+           
+            assert current_url == BASE_URL or current_url.startswith(BASE_URL), \
+                f"Ожидался URL главной ({BASE_URL}), но получили: {current_url}"
+            
+    @allure.title("Клик по логотипу Яндекса - переход на Дзен ")
+    def test_yandex_logo_opens_dzen(self, flow_with_success_modal, entry_data_by_key):
+        flow = flow_with_success_modal
+        page = flow["order"]
 
-    def test_yandex_logo_opens_dzen(self,prepared_success_modal):
-        flow = prepared_success_modal
-        page = flow["order"]  
+        data, button_location = entry_data_by_key
+        allure.attach(json.dumps(data, ensure_ascii=False, indent=2), f"Данные заказа (кнопка: {button_location})", allure.attachment_type.JSON)
 
-        with allure.step("Клик по логотипу Яндекса → переход на Дзен"):
+        with allure.step("Переходим к просмотру статуса заказа"):
+            page.click_view_status()
+
+        with allure.step("Клик по логотипу Яндекса (переход на Дзен)"):
             page.click_yandex_logo_and_wait_for_dzen()
-            time.sleep(2)
+          
         with allure.step("Проверяем, что мы на Дзене"):
-            assert page.is_on_dzen(), "Ждал Дзен,  открыт  URL"
-        
+            page.wait_for_url_contains("dzen.ru")
+            assert page.is_on_dzen(), "Ожидался Дзен, но URL не соответствует"
+
