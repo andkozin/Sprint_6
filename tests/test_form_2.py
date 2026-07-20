@@ -1,7 +1,7 @@
 import pytest
 import allure
 import json
-from datetime import datetime
+
 from pages.locators import OrderFormLocators
 from tests.data import ENTRY_POINTS
 

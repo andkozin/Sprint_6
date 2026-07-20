@@ -44,3 +44,6 @@ test_loc.py
 # --- Прочее ---
 .env
 secrets.json
+
+debug_driver.py
+tests/debug_click.py
