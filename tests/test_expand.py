@@ -20,7 +20,7 @@ class TestAccordionQuestions:
         (7, EXPAND_TEXT[7]),
     ])
     def test_accordion_question(self, page: MainPage, index, expected_text):
-        with allure.step(f"Открываем главную страницу"):
+        with allure.step(f"Открываем главную страницу "):
             page.open()
 
         with allure.step(f"Кликаем по заголовку вопроса №{index}"):
