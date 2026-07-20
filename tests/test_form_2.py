@@ -64,23 +64,26 @@ def test_top_entry_point(prepared_order_flow,  field_key):
                 
             elif field_key == "scooter_color":
                 assert check_method(value), f"Цвет '{field_key}' не выбран"
-                
+         
             elif field_key == "order_date":
                 
-                day_to_click = int(value)
-
-                page.fill_order_date_from_calendar(day_to_click)
+                allure.attach(
+                    f"Ожидался день: {value}",
+                    "Входные данные для проверки даты",
+                    allure.attachment_type.TEXT
+                )
                
                 input_el = page.find_element(*OrderFormLocators.DATE_INPUT)
                 actual_value = (input_el.get_attribute("value") or "").strip()
-
+                    
                 allure.attach(
-                    f"Ожидался день: {day_to_click}\nПолучилось в поле: {actual_value}",
-                    "Проверка даты в поле",
+                    f"Ожидался день: {value}\nПолучилось в поле: '{actual_value}'",
+                    "Сравнение ожидаемого и фактического значения даты",
                     allure.attachment_type.TEXT
                 )
 
-                assert actual_value != "", f"Поле даты осталось пустым после клика по дню {day_to_click}"
+                assert page.is_date_filled(), f"Поле даты осталось пустым. Фактическое значение: '{actual_value}'"
+
                 
             else:
                 assert check_method(), f"Поле '{field_key}' не заполнено"
@@ -128,21 +131,24 @@ def test_bottom_entry_point(prepared_order_flow, field_key):
                 assert check_method(value), f"Цвет '{field_key}' не выбран"
                 
             elif field_key == "order_date":
+                
+                allure.attach(
+                    f"Ожидался день: {value}",
+                    "Входные данные для проверки даты",
+                    allure.attachment_type.TEXT
+                )
                
-                day_to_click = int(value)
-
-                page.fill_order_date_from_calendar(day_to_click)
-            
                 input_el = page.find_element(*OrderFormLocators.DATE_INPUT)
                 actual_value = (input_el.get_attribute("value") or "").strip()
-
+                    
                 allure.attach(
-                    f"Ожидался день: {day_to_click}\nПолучилось в поле: {actual_value}",
-                    "Проверка даты в поле",
+                    f"Ожидался день: {value}\nПолучилось в поле: '{actual_value}'",
+                    "Сравнение ожидаемого и фактического значения даты",
                     allure.attachment_type.TEXT
                 )
 
-                assert actual_value != "", f"Поле даты осталось пустым после клика по дню {day_to_click}"
+                assert page.is_date_filled(), f"Поле даты осталось пустым. Фактическое значение: '{actual_value}'"
+
                 
             else:
                 assert check_method(), f"Поле '{field_key}' не заполнено"
