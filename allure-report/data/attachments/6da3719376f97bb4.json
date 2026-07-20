@@ -1,0 +1,12 @@
+{
+  "name": "Петр",
+  "surname": "Петров",
+  "address": "СПб, пгт. Рощино",
+  "metro": "ВДНХ",
+  "phone": "+79990000001",
+  "duration": "сутки",
+  "button_location": "top",
+  "order_date": "3",
+  "scooter_color": "black",
+  "comments": "Домофон - 12345"
+}

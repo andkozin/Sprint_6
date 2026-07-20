@@ -1,0 +1,12 @@
+{
+  "name": "Иван",
+  "surname": "Иванов",
+  "address": "Мск. пр. Ленина, д. 1",
+  "metro": "Охотный Ряд",
+  "phone": "+79990000002",
+  "duration": "трое суток",
+  "button_location": "finish",
+  "order_date": "8",
+  "scooter_color": "grey",
+  "comments": "Домофон - 54321"
+}
