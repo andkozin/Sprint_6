@@ -11,16 +11,16 @@ from tests.data import ENTRY_POINTS
 
 BASE_URL = "https://qa-scooter.praktikum-services.ru"
 
-@pytest.fixture(scope="function") 
-def driver():
-        options = Options()
-        options.add_argument("--window-size=1920,1080")
-        driver = webdriver.Firefox(options=options) # driver = webdriver.Chrome(options=options)
-        yield driver
-        driver.quit()
+# @pytest.fixture(scope="function") 
+# def driver():
+#         options = Options()
+#         options.add_argument("--window-size=1920,1080")
+#         driver = webdriver.Firefox(options=options) # driver = webdriver.Chrome(options=options)
+#         yield driver
+#         driver.quit()
 
 """ После обновления браузера появилась проблема - (60.06s teardown tests/test_order.py
-    57.46s teardown tests/test_order.py) ИИ предлож. убрать driver.quit() и использовать killall в ->
+    57.46s teardown tests/test_order.py) ИИ предлож. убрать driver.quit() и использовать killall в ->"""
 
 import subprocess
 from selenium.webdriver.firefox.service import Service
@@ -36,7 +36,7 @@ def driver():
     if os.name == "posix": #
         subprocess.run(["killall", "-9", "firefox"], capture_output=True, check=False) #
         subprocess.run(["killall", "-9", "geckodriver"], capture_output=True, check=False)#
-      
+"""    
 после обновления OS и после команды pip install webdriver-manager - проблема  ушла похоже версии драйвера и бразера не совпадали
 """
 
