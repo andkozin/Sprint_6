@@ -10,7 +10,6 @@ from conftest import BASE_URL
 
 class TestOrderFlow:
 
-    @allure.title("Заполнение Формы 1 и переход к Форме 2 ({param_id})")
     @pytest.mark.parametrize(
     "entry_data_by_key",
     ["top", "bottom"],
@@ -42,7 +41,6 @@ class TestOrderFlow:
 
         with allure.step("Проверяем, что появилась Форма 2"):
             assert page_order.wait_for_form_2_ready(), "Форма 2 не появилась после отправки Формы 1"
-
 
 
     @allure.feature("Оформление заказа")
