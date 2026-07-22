@@ -2,7 +2,8 @@
 import allure
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
-from .locators import OrderFormLocators
+from locators.order_form_locators import OrderFormLocators
+
 from selenium.webdriver.common.action_chains import ActionChains
 
 class BasePage:

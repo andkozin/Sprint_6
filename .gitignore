@@ -15,6 +15,7 @@ pages/__init__.py
 tests/__init__.py
 pytest.ini
 requirements.txt
+pages/locators.txt
 
 # --- IDE (VS Code, PyCharm) ---
 .vscode/

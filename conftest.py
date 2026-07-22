@@ -1,7 +1,11 @@
 # conftest.py
 import pytest
 import allure
+import os, subprocess, platform
 from selenium import webdriver
+from webdriver_manager.firefox import GeckoDriverManager
+from selenium.webdriver.firefox.service import Service
+
 from selenium.webdriver.firefox.options import Options # # from selenium.webdriver.chrome.options import Options
 
 from pages.main_page import MainPage
@@ -10,6 +14,11 @@ from pages.order_page import OrderFormPage
 from tests.data import ENTRY_POINTS
 
 BASE_URL = "https://qa-scooter.praktikum-services.ru"
+
+
+
+
+
 
 # @pytest.fixture(scope="function") 
 # def driver():

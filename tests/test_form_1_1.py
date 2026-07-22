@@ -1,7 +1,10 @@
+# tests/form_1_1.py
+
 import pytest
 import allure
 import json
-from pages.locators import OrderFormLocators
+from locators.order_form_locators import OrderFormLocators
+
 from tests.data import ENTRY_POINTS
 
 FIELD_CONFIG = {

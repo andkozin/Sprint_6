@@ -1,13 +1,6 @@
-# pages/locators.py
-from selenium.webdriver.common.by import By
+# locators/order_locators.py
 
-# локаторы для главной страницы
-class MainPageLocators: 
-   
-    ACCORDION_HEADERS = (By.CSS_SELECTOR, "[data-accordion-component='AccordionItemButton']") # для списка заголовок
-    PANEL_INDEX = "accordion__panel-{}" # для индекст заголовка
-    ORDER_BUTTON_TOP = (By.XPATH, "//div[contains(@class,'Header_Nav')]//button[.='Заказать']") # кнопка заказать в шапке
-    ORDER_FINISH_BUTTON = (By.XPATH, "//div[contains(@class,'Home_FinishButton')]//button[.='Заказать']") # кнопка заказать внизу
+from selenium.webdriver.common.by import By
 
 class OrderFormLocators:
 
@@ -56,7 +49,3 @@ class OrderFormLocators:
     
 
     VIEW_STATUS_BUTTON = (By.XPATH, '//div[contains(@class, "Order_NextButton")]//button[normalize-space()="Посмотреть статус"]') # кнопка для статуса заказа
-
-    LOGO_LINK_SAMOKAT = (By.CSS_SELECTOR, 'a[class*="Header_LogoScooter"]') # лого Самоката на ГС
-    LOGO_YANDEX_LINK = (By.CSS_SELECTOR, 'a[class*="Header_LogoYandex"]') # лого Яндекса
-    

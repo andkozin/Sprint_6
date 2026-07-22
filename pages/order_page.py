@@ -1,7 +1,8 @@
 # pages/order_page.py
 
 from .base_page import BasePage
-from .locators import OrderFormLocators 
+from locators.main_page_locators import MainPageLocators
+from locators.order_form_locators import OrderFormLocators
 
 
 class OrderFormPage(BasePage):
@@ -171,12 +172,12 @@ class OrderFormPage(BasePage):
 
     # переход на ГС
     def click_logo(self):
-        btn = self.wait_for_element_clickable(OrderFormLocators.LOGO_LINK_SAMOKAT)
+        btn = self.wait_for_element_clickable(MainPageLocators.LOGO_LINK_SAMOKAT)
         btn.click()
 
     # яндекс через BasePage
     def click_yandex_logo_and_wait_for_dzen(self, timeout=10):
-        btn = self.wait_for_element_clickable(OrderFormLocators.LOGO_YANDEX_LINK)
+        btn = self.wait_for_element_clickable(MainPageLocators.LOGO_YANDEX_LINK)
         btn.click()
 
         original_handle = self.get_current_handle()

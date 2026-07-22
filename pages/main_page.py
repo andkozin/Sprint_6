@@ -1,7 +1,7 @@
 # pages/main_page.py
 from selenium.webdriver.common.by import By
 from .base_page import BasePage
-from .locators import MainPageLocators
+from locators.main_page_locators import MainPageLocators
 
 class MainPage(BasePage):
 
