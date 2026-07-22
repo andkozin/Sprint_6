@@ -12,7 +12,7 @@ class TestForm1:
     FIELD_CONFIG = {
         "name": ("Имя", OrderFormLocators.INPUT_NAME, "fill_name"),
         "surname": ("Фамилия", OrderFormLocators.INPUT_SURNAME, "fill_surname"),
-        "address": ("Адрес", OrderFormLocators.INPUT_NAME, "fill_address"), # INPUT_ADDRESS
+        "address": ("Адрес", OrderFormLocators.INPUT_ADDRESS, "fill_address"), # INPUT_ADDRESS
         "metro": ("Метро", OrderFormLocators.INPUT_METRO_SEARCH, "fill_metro"), # INPUT_METRO_SEARCH
         "phone": ("Телефон", OrderFormLocators.INPUT_PHONE, "fill_phone"),
     }
@@ -34,7 +34,7 @@ class TestForm1:
         self._prepare_form_1(main_page, page, cfg)
 
         with allure.step("Ждём появления Формы 2"):
-                assert page.wait_for_form_1_ready(), "Форма 1 не появилась "
+                assert page.wait_for_form_1_ready(), "Форма 1 не появилась " # рек. наставника
 
         display_name, locator, method_name = self.FIELD_CONFIG[field_key]
         value = cfg["data"][field_key]
@@ -61,7 +61,7 @@ class TestForm1:
         self._prepare_form_1(main_page, page, cfg)
 
         with allure.step("Ждём появления Формы 2"):
-                assert page.wait_for_form_1_ready(), "Форма 1 не появилась "
+                assert page.wait_for_form_1_ready(), "Форма 1 не появилась " # рек. наставника
 
         display_name, locator, method_name = self.FIELD_CONFIG[field_key]
         value = cfg["data"][field_key]
