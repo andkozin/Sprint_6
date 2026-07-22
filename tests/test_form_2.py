@@ -8,7 +8,7 @@ from locators.order_form_locators import OrderFormLocators
 from tests.data import ENTRY_POINTS
 
 class TestForm2:
-    
+
 # Переход к форме 2
     def _prepare_form_2(self, main_page, page, cfg):
         
@@ -41,7 +41,7 @@ class TestForm2:
         self._prepare_form_2(main_page, page, cfg)
 
         with allure.step("Ждём появления Формы 2"):
-            assert page.wait_for_form_2_ready(), "Форма 2 не появилась после отправки Формы 1"
+            assert page.wait_for_form_2_ready(), "Форма 2 не появилась после отправки Формы 1" # рек. наставника
 
         display_name, locator, fill_method_name, check_method_name = self.FORM_2_FIELDS_CONFIG[field_key]
 
@@ -109,7 +109,7 @@ class TestForm2:
         self._prepare_form_2(main_page, page, cfg)
 
         with allure.step("Ждём появления Формы 2"):
-            assert page.wait_for_form_2_ready(), "Форма 2 не появилась после отправки Формы 1"
+            assert page.wait_for_form_2_ready(), "Форма 2 не появилась после отправки Формы 1" # рек. наставника
 
         display_name, locator, fill_method_name, check_method_name = self.FORM_2_FIELDS_CONFIG[field_key]
 
