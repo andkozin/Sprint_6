@@ -1,3 +1,6 @@
+nano .gitignore
+
+
 # --- Python ---
 __pycache__/
 # Игнорировать любые .pyc файлы
@@ -30,8 +33,9 @@ coverage.xml
 
 
 # --- Allure (результаты и отчёт) ---
+ # странно ро заданию внимательно
 allure-results/
-# allure-report/
+allure-report/
 help_allure.txt
 test_loc.py
 
